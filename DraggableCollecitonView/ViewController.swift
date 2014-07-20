@@ -95,26 +95,32 @@ class ViewController: UIViewController, DraggableCellDelegate{
         }
         
         if gestureRecognizer.state == .Began {
-            cell.hidden = true
 
             let point = gestureRecognizer.locationInView(collectionView)
-            pannedIndexPath = collectionView.indexPathForItemAtPoint(point)
-            
-            // create image for dragging
-            UIGraphicsBeginImageContextWithOptions(cell.frame.size, cell.opaque, 0)
-            cell.contentView.layer.renderInContext(UIGraphicsGetCurrentContext())
-            let image = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            
-            // and add
-            pannedView = UIImageView(image: image)
-            pannedView!.backgroundColor = UIColor.whiteColor()
-            pannedView!.layer.borderColor = cell.layer.borderColor
-            pannedView!.layer.borderWidth = cell.layer.borderWidth
-            pannedView!.center = gestureRecognizer.locationInView(self.view)
-            self.view.addSubview(pannedView)
+            if let path = collectionView.indexPathForItemAtPoint(point) {
+                cell.hidden = true
+
+                pannedIndexPath = path
+                
+                // create image for dragging
+                UIGraphicsBeginImageContextWithOptions(cell.frame.size, cell.opaque, 0)
+                cell.contentView.layer.renderInContext(UIGraphicsGetCurrentContext())
+                let image = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                
+                // and add
+                pannedView = UIImageView(image: image)
+                pannedView!.backgroundColor = UIColor.whiteColor()
+                pannedView!.layer.borderColor = cell.layer.borderColor
+                pannedView!.layer.borderWidth = cell.layer.borderWidth
+                pannedView!.center = gestureRecognizer.locationInView(self.view)
+                self.view.addSubview(pannedView)
+            }
             
         } else if gestureRecognizer.state == .Changed {
+            if !pannedIndexPath {
+                return
+            }
             
             let destPoint = gestureRecognizer.locationInView(self.view)
             pannedView!.center = destPoint
