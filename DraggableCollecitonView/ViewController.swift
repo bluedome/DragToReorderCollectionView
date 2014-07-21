@@ -132,6 +132,13 @@ class ViewController: UIViewController, DraggableCellDelegate{
                     let moved = dataValues.removeAtIndex(pannedIndexPath!.item)
                     dataValues.insert(moved, atIndex: indexPath.item)
                     
+                    
+                    // swap tag
+                    let tag = cell.tag
+                    let swappedCell = collectionView.cellForItemAtIndexPath(indexPath)
+                    cell.tag = swappedCell.tag
+                    swappedCell.tag = tag
+                    
                     collectionView.moveItemAtIndexPath(pannedIndexPath, toIndexPath: indexPath)
                     pannedIndexPath = indexPath
                 }
