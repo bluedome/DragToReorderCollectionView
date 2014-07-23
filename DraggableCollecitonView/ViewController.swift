@@ -6,15 +6,15 @@
 import UIKit
 
 class ViewController: UIViewController, DraggableCellDelegate{
-    
-    @IBOutlet var collectionView: UICollectionView?
+    // apple says that outlet should be weak implicitly unwrapped optional
+    @IBOutlet weak var collectionView: UICollectionView!
 
-    var editButtonItem: UIBarButtonItem?
-    var doneButtonItem: UIBarButtonItem?
+    var editButtonItem: UIBarButtonItem!
+    var doneButtonItem: UIBarButtonItem!
     
     var pannedIndexPath: NSIndexPath?
     var pannedView: UIImageView?
-
+    
     var dataValues:[Int] = {
         var tmp = [Int]()
         for i in 0 ..< 100 {
@@ -26,14 +26,8 @@ class ViewController: UIViewController, DraggableCellDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        if !editButtonItem {
-            editButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editAction:")
-        }
-        
-        if !doneButtonItem {
-            doneButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "editAction:")
-        }
+        editButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editAction:")
+        doneButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "editAction:")
         
         self.navigationItem.rightBarButtonItem = editButtonItem;
     }
@@ -54,7 +48,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
             
         }
         editing = !editing
-        collectionView?.reloadSections(NSIndexSet(index:0))
+        collectionView.reloadSections(NSIndexSet(index:0))
     }
     
     // UICollectionView Datasource
@@ -69,17 +63,14 @@ class ViewController: UIViewController, DraggableCellDelegate{
             cell.delegate = self
             
             cell.tag = indexPath.item
-            if let label = cell.label {
-                label.text = dataValues[indexPath.item].description
+            cell.label.text = dataValues[indexPath.item].description
+            
+            if editing {
+                cell.deleteButton.hidden = false
+            } else {
+                cell.deleteButton.hidden = true
             }
             
-            if let delButton = cell.deleteButton {
-                if editing {
-                    delButton.hidden = false
-                } else {
-                    delButton.hidden = true
-                }
-            }
             return cell
     }
 
@@ -87,10 +78,11 @@ class ViewController: UIViewController, DraggableCellDelegate{
     
     func draggableCellDeleteButtonTapped(cell: DraggableCell) {
         // delete
-        dataValues.removeAtIndex(cell.tag)
-        collectionView?.performBatchUpdates({
-            self.collectionView!.deleteItemsAtIndexPaths([NSIndexPath(forItem: cell.tag, inSection: 0)])
-            }, completion: { succes in self.collectionView!.reloadData() })
+        let path = collectionView.indexPathForCell(cell)
+        dataValues.removeAtIndex(path.item)
+        collectionView.performBatchUpdates({
+            self.collectionView.deleteItemsAtIndexPaths([ path ])
+            }, completion: { succes in self.collectionView.reloadData() })
     }
     
     func draggableCellPanned(cell: DraggableCell, gestureRecognizer:UIPanGestureRecognizer) {
@@ -101,9 +93,8 @@ class ViewController: UIViewController, DraggableCellDelegate{
         if gestureRecognizer.state == .Began {
 
             let point = gestureRecognizer.locationInView(collectionView)
-            if let path = collectionView?.indexPathForItemAtPoint(point) {
+            if let path = collectionView.indexPathForItemAtPoint(point) {
                 cell.hidden = true
-
                 pannedIndexPath = path
                 
                 // create image for dragging
@@ -130,25 +121,19 @@ class ViewController: UIViewController, DraggableCellDelegate{
             pannedView!.center = destPoint
             
             let point = gestureRecognizer.locationInView(collectionView)
-            if let indexPath = collectionView?.indexPathForItemAtPoint(point) {
+            if let indexPath = collectionView.indexPathForItemAtPoint(point) {
                 if indexPath != pannedIndexPath {
                     // replace
                     let moved = dataValues.removeAtIndex(pannedIndexPath!.item)
                     dataValues.insert(moved, atIndex: indexPath.item)
                     
-                    // swap tag
-                    let tag = cell.tag
-                    let swappedCell = collectionView?.cellForItemAtIndexPath(indexPath)
-                    cell.tag = swappedCell!.tag
-                    swappedCell!.tag = tag
-                    
-                    collectionView?.moveItemAtIndexPath(pannedIndexPath, toIndexPath: indexPath)
+                    collectionView.moveItemAtIndexPath(pannedIndexPath, toIndexPath: indexPath)
                     pannedIndexPath = indexPath
                 }
             }
             
             // scroll if necessary
-            if let visibleItems = collectionView?.indexPathsForVisibleItems() {
+            if let visibleItems = collectionView.indexPathsForVisibleItems() {
                 let visibles = NSArray(array: visibleItems)
                 let sorted = NSArray(array: visibles.sortedArrayUsingDescriptors([ NSSortDescriptor(key: "item", ascending: true) ]))
                 
@@ -156,11 +141,11 @@ class ViewController: UIViewController, DraggableCellDelegate{
                     var lastPath = sorted.lastObject as NSIndexPath
                     if lastPath.item + 1 < dataValues.count {
                         // scroll forward
-                        let attr = collectionView!.collectionViewLayout.layoutAttributesForItemAtIndexPath(lastPath)
+                        let attr = collectionView.collectionViewLayout.layoutAttributesForItemAtIndexPath(lastPath)
                         var rect = attr.frame
                         rect.origin.y += 100
                         
-                        collectionView!.scrollRectToVisible(rect, animated: true)
+                        collectionView.scrollRectToVisible(rect, animated: true)
                     }
                     
                 } else if destPoint.y < 150 {
@@ -171,7 +156,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
                     rect.origin.y -= 100
                     
                     if rect.origin.y >= 0 {
-                        collectionView!.scrollRectToVisible(rect, animated: true)
+                        collectionView.scrollRectToVisible(rect, animated: true)
                     }
                 }
             }
@@ -194,8 +179,8 @@ class ViewController: UIViewController, DraggableCellDelegate{
 }
 
 class DraggableCell : UICollectionViewCell {
-    @IBOutlet var deleteButton: UIButton?
-    @IBOutlet var label: UILabel?
+    @IBOutlet weak var deleteButton: UIButton!
+    @IBOutlet weak var label: UILabel!
     
     weak var delegate: DraggableCellDelegate?
     
@@ -210,9 +195,7 @@ class DraggableCell : UICollectionViewCell {
     }
     
     override func awakeFromNib() {
-        if let delButton = deleteButton {
-            delButton.transform = CGAffineTransformMakeRotation(CGFloat(45 * M_PI / 180))
-        }
+        deleteButton.transform = CGAffineTransformMakeRotation(CGFloat(45 * M_PI / 180))
     }
     
     func panAction(gesture: UIPanGestureRecognizer) {
