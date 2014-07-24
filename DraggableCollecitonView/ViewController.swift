@@ -51,7 +51,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
         collectionView.reloadSections(NSIndexSet(index:0))
     }
     
-    // UICollectionView Datasource
+    // MARK: UICollectionViewDatasource
     
     func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
         return dataValues.count
@@ -71,10 +71,12 @@ class ViewController: UIViewController, DraggableCellDelegate{
                 cell.deleteButton.hidden = true
             }
             
+            cell.editing = editing
+            
             return cell
     }
 
-    // DraggableCellDelegate
+    // MARK: DraggableCellDelegate
     
     func draggableCellDeleteButtonTapped(cell: DraggableCell) {
         // delete
@@ -173,16 +175,22 @@ class ViewController: UIViewController, DraggableCellDelegate{
     }
 }
 
+// MARK: DraggableCellDelegate
+
 @objc protocol DraggableCellDelegate {
     optional func draggableCellDeleteButtonTapped(cell: DraggableCell)
     optional func draggableCellPanned(cell: DraggableCell, gestureRecognizer:UIPanGestureRecognizer)
 }
 
-class DraggableCell : UICollectionViewCell {
+// MARK: DraggableCell
+
+class DraggableCell : UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var label: UILabel!
     
     weak var delegate: DraggableCellDelegate?
+    
+    var editing = false
     
     init(coder aDecoder: NSCoder!) {
         super.init(coder: aDecoder)
@@ -191,6 +199,7 @@ class DraggableCell : UICollectionViewCell {
         self.layer.borderWidth = 1.0
         
         let gesture = UIPanGestureRecognizer(target: self, action: "panAction:")
+        gesture.delegate = self
         self.addGestureRecognizer(gesture)
     }
     
@@ -207,4 +216,11 @@ class DraggableCell : UICollectionViewCell {
         // invoke protocol method
         delegate?.draggableCellDeleteButtonTapped?(self)
     }
+    
+    // MARK: UIGestureRecognizerDelegate
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer!, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer!) -> Bool {
+        return !editing;
+    }
+
 }
