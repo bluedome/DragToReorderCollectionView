@@ -349,7 +349,7 @@
 		656139E019781021001A0E44 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DraggableCollecitonView.app/DraggableCollecitonView";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DragToReorderCollectionView.app/DragToReorderCollectionView";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -368,7 +368,7 @@
 		656139E119781021001A0E44 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DraggableCollecitonView.app/DraggableCollecitonView";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DragToReorderCollectionView.app/DragToReorderCollectionView";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

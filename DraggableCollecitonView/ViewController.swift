@@ -6,7 +6,7 @@
 import UIKit
 
 class ViewController: UIViewController, DraggableCellDelegate{
-    // apple says that outlet should be weak implicitly unwrapped optional
+    // apple says that outlets should be weak implicitly unwrapped optional
     @IBOutlet weak var collectionView: UICollectionView!
 
     var editButtonItem: UIBarButtonItem!
@@ -18,7 +18,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
     var dataValues:[Int] = {
         var tmp = [Int]()
         for i in 0 ..< 100 {
-            tmp += i
+            tmp.append(i)
         }
         return tmp
     }()
@@ -111,11 +111,11 @@ class ViewController: UIViewController, DraggableCellDelegate{
                 pannedView!.layer.borderColor = cell.layer.borderColor
                 pannedView!.layer.borderWidth = cell.layer.borderWidth
                 pannedView!.center = gestureRecognizer.locationInView(self.view)
-                self.view.addSubview(pannedView)
+                self.view.addSubview(pannedView!)
             }
             
         } else if gestureRecognizer.state == .Changed {
-            if !pannedIndexPath {
+            if pannedIndexPath == nil {
                 return
             }
             
@@ -192,7 +192,7 @@ class DraggableCell : UICollectionViewCell, UIGestureRecognizerDelegate {
     
     var editing = false
     
-    init(coder aDecoder: NSCoder!) {
+    required init(coder aDecoder: NSCoder!) {
         super.init(coder: aDecoder)
         
         self.layer.borderColor = UIColor.lightGrayColor().CGColor
