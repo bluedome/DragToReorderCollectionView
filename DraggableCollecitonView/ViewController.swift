@@ -80,14 +80,15 @@ class ViewController: UIViewController, DraggableCellDelegate{
     
     func draggableCellDeleteButtonTapped(cell: DraggableCell) {
         // delete
-        let path = collectionView.indexPathForCell(cell)
-        dataValues.removeAtIndex(path.item)
-        collectionView.performBatchUpdates({
-            self.collectionView.deleteItemsAtIndexPaths([ path ])
-            }, completion: { succes in self.collectionView.reloadData() })
+        if let path = collectionView.indexPathForCell(cell) {
+            dataValues.removeAtIndex(path.item)
+            collectionView.performBatchUpdates({
+                self.collectionView.deleteItemsAtIndexPaths([ path ])
+                }, completion: { succes in self.collectionView.reloadData() })
+        }
     }
     
-    func draggableCellPanned(cell: DraggableCell, gestureRecognizer:UIPanGestureRecognizer) {
+    func draggableCell(cell: DraggableCell, pannedWithGestureRecognizer gestureRecognizer:UIPanGestureRecognizer) {
         if !editing {
             return
         }
@@ -129,13 +130,14 @@ class ViewController: UIViewController, DraggableCellDelegate{
                     let moved = dataValues.removeAtIndex(pannedIndexPath!.item)
                     dataValues.insert(moved, atIndex: indexPath.item)
                     
-                    collectionView.moveItemAtIndexPath(pannedIndexPath, toIndexPath: indexPath)
+                    collectionView.moveItemAtIndexPath(pannedIndexPath!, toIndexPath: indexPath)
                     pannedIndexPath = indexPath
                 }
             }
             
             // scroll if necessary
-            if let visibleItems = collectionView.indexPathsForVisibleItems() {
+            let visibleItems = collectionView.indexPathsForVisibleItems()
+            if visibleItems.count > 0 {
                 let visibles = NSArray(array: visibleItems)
                 let sorted = NSArray(array: visibles.sortedArrayUsingDescriptors([ NSSortDescriptor(key: "item", ascending: true) ]))
                 
@@ -179,7 +181,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
 
 @objc protocol DraggableCellDelegate {
     optional func draggableCellDeleteButtonTapped(cell: DraggableCell)
-    optional func draggableCellPanned(cell: DraggableCell, gestureRecognizer:UIPanGestureRecognizer)
+    optional func draggableCell(cell: DraggableCell, pannedWithGestureRecognizer gestureRecognizer:UIPanGestureRecognizer)
 }
 
 // MARK: DraggableCell
@@ -192,7 +194,7 @@ class DraggableCell : UICollectionViewCell, UIGestureRecognizerDelegate {
     
     var editing = false
     
-    required init(coder aDecoder: NSCoder!) {
+    required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         self.layer.borderColor = UIColor.lightGrayColor().CGColor
@@ -209,7 +211,7 @@ class DraggableCell : UICollectionViewCell, UIGestureRecognizerDelegate {
     
     func panAction(gesture: UIPanGestureRecognizer) {
         // invoke protocol method
-        delegate?.draggableCellPanned?(self, gestureRecognizer: gesture)
+        delegate?.draggableCell?(self, pannedWithGestureRecognizer: gesture)
     }
 
     @IBAction func deleteAction(button: UIButton) {
