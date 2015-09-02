@@ -11,6 +11,7 @@
 		656139C819781020001A0E44 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656139C719781020001A0E44 /* ViewController.swift */; };
 		656139CD19781020001A0E44 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 656139CC19781020001A0E44 /* Images.xcassets */; };
 		656139D919781021001A0E44 /* DraggableCollecitonViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656139D819781021001A0E44 /* DraggableCollecitonViewTests.swift */; };
+		65739D3E1B9727F50071D251 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65739D3D1B9727F50071D251 /* Launch Screen.storyboard */; };
 		65F8FA2F19A36F0C00B7F803 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 656139C919781020001A0E44 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 		656139D219781021001A0E44 /* DragToReorderCollectionViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DragToReorderCollectionViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		656139D719781021001A0E44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		656139D819781021001A0E44 /* DraggableCollecitonViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableCollecitonViewTests.swift; sourceTree = "<group>"; };
+		65739D3D1B9727F50071D251 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				656139C919781020001A0E44 /* Main.storyboard */,
 				656139CC19781020001A0E44 /* Images.xcassets */,
 				656139C319781020001A0E44 /* Supporting Files */,
+				65739D3D1B9727F50071D251 /* Launch Screen.storyboard */,
 			);
 			name = DragToReorderCollectionView;
 			path = DraggableCollecitonView;
@@ -155,7 +158,9 @@
 		656139B819781020001A0E44 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = bluedome;
 				TargetAttributes = {
 					656139BF19781020001A0E44 = {
@@ -191,6 +196,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65739D3E1B9727F50071D251 /* Launch Screen.storyboard in Resources */,
 				65F8FA2F19A36F0C00B7F803 /* Main.storyboard in Resources */,
 				656139CD19781020001A0E44 /* Images.xcassets in Resources */,
 			);
@@ -265,6 +271,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -330,6 +337,7 @@
 				INFOPLIST_FILE = DraggableCollecitonView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bluedome.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = DragToReorderCollectionView;
 			};
 			name = Debug;
@@ -342,6 +350,7 @@
 				INFOPLIST_FILE = DraggableCollecitonView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bluedome.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = DragToReorderCollectionView;
 			};
 			name = Release;
@@ -360,6 +369,7 @@
 				);
 				INFOPLIST_FILE = DraggableCollecitonViewTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bluedome.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = DragToReorderCollectionViewTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
@@ -375,6 +385,7 @@
 				);
 				INFOPLIST_FILE = DraggableCollecitonViewTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bluedome.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = DragToReorderCollectionViewTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};

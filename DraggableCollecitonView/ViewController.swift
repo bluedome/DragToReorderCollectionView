@@ -9,7 +9,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
     // apple says that outlets should be weak implicitly unwrapped optional
     @IBOutlet weak var collectionView: UICollectionView!
 
-    var editButtonItem: UIBarButtonItem!
+    var editingButtonItem: UIBarButtonItem!
     var doneButtonItem: UIBarButtonItem!
     
     var pannedIndexPath: NSIndexPath?
@@ -26,10 +26,10 @@ class ViewController: UIViewController, DraggableCellDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        editButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editAction:")
+        editingButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editAction:")
         doneButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "editAction:")
         
-        self.navigationItem.rightBarButtonItem = editButtonItem;
+        self.navigationItem.rightBarButtonItem = editingButtonItem;
     }
     
     override func didReceiveMemoryWarning() {
@@ -40,7 +40,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
     @IBAction func editAction(buttonItem: UIBarButtonItem) {
         if editing {
             // end editing
-            self.navigationItem.setRightBarButtonItem(editButtonItem, animated: true)
+            self.navigationItem.setRightBarButtonItem(editingButtonItem, animated: true)
             
         } else {
             // begin editing
@@ -59,7 +59,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
     
     func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) ->
         UICollectionViewCell! {
-            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("defaultCell", forIndexPath: indexPath) as DraggableCell
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("defaultCell", forIndexPath: indexPath) as! DraggableCell
             cell.delegate = self
             
             cell.tag = indexPath.item
@@ -102,7 +102,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
                 
                 // create image for dragging
                 UIGraphicsBeginImageContextWithOptions(cell.frame.size, cell.opaque, 0)
-                cell.contentView.layer.renderInContext(UIGraphicsGetCurrentContext())
+                cell.contentView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
                 let image = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
                 
@@ -142,11 +142,11 @@ class ViewController: UIViewController, DraggableCellDelegate{
                 let sorted = NSArray(array: visibles.sortedArrayUsingDescriptors([ NSSortDescriptor(key: "item", ascending: true) ]))
                 
                 if destPoint.y > CGRectGetHeight(self.view.frame) - 50 {
-                    var lastPath = sorted.lastObject as NSIndexPath
+                    let lastPath = sorted.lastObject as! NSIndexPath
                     if lastPath.item + 1 < dataValues.count {
                         // scroll forward
                         let attr = collectionView.collectionViewLayout.layoutAttributesForItemAtIndexPath(lastPath)
-                        var rect = attr.frame
+                        var rect = attr!.frame
                         rect.origin.y += 100
                         
                         collectionView.scrollRectToVisible(rect, animated: true)
@@ -154,9 +154,9 @@ class ViewController: UIViewController, DraggableCellDelegate{
                     
                 } else if destPoint.y < 150 {
                     // scroll upward
-                    let firstPath = sorted.firstObject as NSIndexPath
+                    let firstPath = sorted.firstObject as! NSIndexPath
                     let attr = collectionView!.collectionViewLayout.layoutAttributesForItemAtIndexPath(firstPath)
-                    var rect = attr.frame
+                    var rect = attr!.frame
                     rect.origin.y -= 100
                     
                     if rect.origin.y >= 0 {
@@ -194,7 +194,7 @@ class DraggableCell : UICollectionViewCell, UIGestureRecognizerDelegate {
     
     var editing = false
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         self.layer.borderColor = UIColor.lightGrayColor().CGColor
@@ -221,7 +221,7 @@ class DraggableCell : UICollectionViewCell, UIGestureRecognizerDelegate {
     
     // MARK: UIGestureRecognizerDelegate
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer!, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer!) -> Bool {
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return !editing;
     }
 
