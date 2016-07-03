@@ -30,8 +30,6 @@ class ViewController: UIViewController, DraggableCellDelegate{
         doneButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(editAction(_:)))
         
         self.navigationItem.rightBarButtonItem = editingButtonItem;
-        
-        collectionView.multipleTouchEnabled = false
     }
     
     override func didReceiveMemoryWarning() {
