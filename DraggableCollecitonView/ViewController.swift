@@ -26,10 +26,12 @@ class ViewController: UIViewController, DraggableCellDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        editingButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editAction:")
-        doneButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "editAction:")
+        editingButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: #selector(editAction(_:)))
+        doneButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(editAction(_:)))
         
         self.navigationItem.rightBarButtonItem = editingButtonItem;
+        
+        collectionView.multipleTouchEnabled = false
     }
     
     override func didReceiveMemoryWarning() {
@@ -88,13 +90,17 @@ class ViewController: UIViewController, DraggableCellDelegate{
         }
     }
     
+    private var dragging = false
     func draggableCell(cell: DraggableCell, pannedWithGestureRecognizer gestureRecognizer:UIPanGestureRecognizer) {
         if !editing {
             return
         }
         
         if gestureRecognizer.state == .Began {
-
+            if dragging {
+                return // forbid multi-touch
+            }
+            
             let point = gestureRecognizer.locationInView(collectionView)
             if let path = collectionView.indexPathForItemAtPoint(point) {
                 cell.hidden = true
@@ -113,6 +119,8 @@ class ViewController: UIViewController, DraggableCellDelegate{
                 pannedView!.layer.borderWidth = cell.layer.borderWidth
                 pannedView!.center = gestureRecognizer.locationInView(self.view)
                 self.view.addSubview(pannedView!)
+                
+                dragging = true
             }
             
         } else if gestureRecognizer.state == .Changed {
@@ -173,6 +181,8 @@ class ViewController: UIViewController, DraggableCellDelegate{
             pannedView = nil
         
             pannedIndexPath = nil
+            
+            dragging = false
         }
     }
 }
@@ -200,7 +210,8 @@ class DraggableCell : UICollectionViewCell, UIGestureRecognizerDelegate {
         self.layer.borderColor = UIColor.lightGrayColor().CGColor
         self.layer.borderWidth = 1.0
         
-        let gesture = UIPanGestureRecognizer(target: self, action: "panAction:")
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(panAction(_:)))
+        gesture.maximumNumberOfTouches = 1
         gesture.delegate = self
         self.addGestureRecognizer(gesture)
     }
