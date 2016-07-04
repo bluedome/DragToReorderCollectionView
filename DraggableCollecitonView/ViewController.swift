@@ -88,15 +88,16 @@ class ViewController: UIViewController, DraggableCellDelegate{
         }
     }
     
-    private var dragging = false
+    private var processingGestureRecogznierId: Int?
+    
     func draggableCell(cell: DraggableCell, pannedWithGestureRecognizer gestureRecognizer:UIPanGestureRecognizer) {
         if !editing {
             return
         }
         
         if gestureRecognizer.state == .Began {
-            if dragging {
-                return // forbid multi-touch
+            if let gestureId = processingGestureRecogznierId where gestureId != gestureRecognizer.hashValue {
+                return
             }
             
             let point = gestureRecognizer.locationInView(collectionView)
@@ -118,11 +119,11 @@ class ViewController: UIViewController, DraggableCellDelegate{
                 pannedView!.center = gestureRecognizer.locationInView(self.view)
                 self.view.addSubview(pannedView!)
                 
-                dragging = true
+                processingGestureRecogznierId = gestureRecognizer.hashValue
             }
             
         } else if gestureRecognizer.state == .Changed {
-            if pannedIndexPath == nil {
+            if pannedIndexPath == nil || processingGestureRecogznierId != gestureRecognizer.hashValue {
                 return
             }
             
@@ -172,6 +173,10 @@ class ViewController: UIViewController, DraggableCellDelegate{
             }
         
         } else {
+            if processingGestureRecogznierId != gestureRecognizer.hashValue {
+                return
+            }
+            
             // end dragging
             cell.hidden = false
             
@@ -180,7 +185,7 @@ class ViewController: UIViewController, DraggableCellDelegate{
         
             pannedIndexPath = nil
             
-            dragging = false
+            processingGestureRecogznierId = nil
         }
     }
 }
